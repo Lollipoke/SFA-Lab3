@@ -12,7 +12,7 @@ In this laboratory, we were able to work on a real target, and perform a Differe
 
 ## Setup
 
-For this laboratory, we kept the same board as in the previous lab. In order to prepare for the AES attack, we only had to install the firware on the board, and then follow the same procedure as in previous lab. We show the very impressive setup on the Figure 1 below :
+For this laboratory, we kept the same board as in the previous lab. In order to prepare for the AES attack, we only had to install the firmware on the board, and then follow the same procedure as in previous lab. We show the very impressive setup on the Figure 1 below :
 
 ![Board setup](img/setup.png)
 
@@ -21,6 +21,12 @@ Once everything was connected and ready to go, we started working on the noteboo
 # Attack methodology
 
 During the presentation of the lab, we were shown two ways of attacking the AES algorithm. The first consisted of attacking the round 10 of the algorithm, and the second consisted of attacking the round 9. The first one was easier to understand, but required a **lot** of ciphertexts to be able to retrieve the key. The second one was more complicated to understand, but required less ciphertexts, and we could use a public python library, `phoenixAES`, to find the key directly from the diagonal faulty ciphertexts. 
+
+To explain a bit further the concept of diagonal faulty, ciphertexts, we can look at the graph on Figure 2 below :
+
+![Diagonal faulty ciphertexts](img/diagonal.png)
+
+When a fault is applied on round 9, it is carried until the `MixColumn` operation, where the fault is then spread on the whole column and carried to the start of round 10. At the `ShiftRows` operation, the faulty column is then shifted, and the difference between the faulty ciphertext and the correct ciphertext is only on the diagonal. This is why we only need to find faulty ciphertexts that follow a diagonal pattern, so that we know that the fault was correctly applied.
 
 ## Characterization
 
@@ -31,11 +37,11 @@ We kept the same board as in the previous lab, so we already had the good charac
 |  `offset` |    -23.8    |   -19.3   |  0.1 |
 |  `width`  |     35.3    |    35.8   |  0.1 |
 
-And without surprise we got satisfying results, as we can see on the Figure 2 below :
+And without surprise we got satisfying results, as we can see on the Figure 3 below :
 
 ![Characterization](img/characterization.png)
 
-In order to reduce the execution time, we decided to narrow down our parameter set even more (following the results we got in Figure 2), and we kept the following parameters : 
+In order to reduce the execution time, we decided to narrow down our parameter set even more (following the results we got in Figure 3), and we kept the following parameters : 
 
 | Parameter | Start value | End value | Step |
 |-----------|-------------|-----------|------|
@@ -44,7 +50,7 @@ In order to reduce the execution time, we decided to narrow down our parameter s
 
 To compensate with the smaller parameter set, we increased the number of tries we executed for each parameter tuple from 5 to 7. 
 
-We also had to determine when in the AES algorithm to inject the fault, which was characterized by the `ext_offset` parameter. We knew we had to apply the glitch on the 9th round, and following the graph seen in Figure 3 (given in the notebook) : 
+We also had to determine when in the AES algorithm to inject the fault, which was characterized by the `ext_offset` parameter. We knew we had to apply the glitch on the 9th round, and following the graph seen in Figure 4 (given in the notebook) : 
 
 ![AES graph](img/aes_graph.png)
 
@@ -54,7 +60,7 @@ We eyeballed that the 9th round was occuring between 5500 and 6500, and to be su
 
 Once we had our parameters fixed, we let the notebook run for a while, and made sure to save the faulty ciphertexts that followed a diagonal pattern in a numpy array. Following the documentation on the `phoenixAES` plugin, we knew we had to find at least 22 faulty ciphertexts.
 
-We stopped the execution of the notebook once we reached the 22 faulty ciphertexts. We ended up getting around 1700 diagonal faulty ciphertexts, but we got the same ones multiple times, with only 22 unique values (we had a lot of duplicates). Once we had the 22 faulty ciphertexts, we could move on to the next step, which was to simply run the `phoenixAES` plugin with the code given in Figure 4, and it gave us the key directly.
+We stopped the execution of the notebook once we reached the 22 faulty ciphertexts. We ended up getting around 1700 diagonal faulty ciphertexts, but we got the same ones multiple times, with only 22 unique values (we had a lot of duplicates). Once we had the 22 faulty ciphertexts, we could move on to the next step, which was to simply run the `phoenixAES` plugin with the code given below, and it gave us the key directly.
 
 ```py
 with open('tracefile', 'wb') as t:
