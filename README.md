@@ -58,7 +58,27 @@ We eyeballed that the 9th round was occuring between 5500 and 6500, and to be su
 
 ## Relevant faulted ciphertexts
 
-Once we had our parameters fixed, we let the notebook run for a while, and made sure to save the faulty ciphertexts that followed a diagonal pattern in a numpy array. Following the documentation on the `phoenixAES` plugin, we knew we had to find at least 22 faulty ciphertexts.
+Once we had our parameters fixed, we let the notebook run for a while, and made sure to save the faulty ciphertexts that followed a diagonal pattern in a numpy array. Following the documentation on the `phoenixAES` plugin, we knew we had to find at least 22 faulty ciphertexts. Here is the snippet of code we used to save the faulty ciphertexts :
+
+```py
+"""..."""
+val = target.simpleserial_read_witherrors('r', 16, glitch_timeout=10, timeout=30)
+if val['valid'] is False:
+    print("X", end="")
+    continue
+
+result = val['payload']
+if result != CLEAN_CIPHERTEXT:
+    xor = bytes(a ^ b for (a, b) in zip(CLEAN_CIPHERTEXT, result))
+    print()
+    print(f"ext_offset {ext_offset:02d}\tWidth {width:0.2f}\tOffset {offset:0.2f}\tResult {result.hex()}\txor: {xor.hex()}")
+    # check if xor is diagonal
+    if xor.count(b'\x00') == 12 and xor not in found_xor:
+        found_xor = np.append(found_xor, xor)
+        found_fciphers = np.append(found_fciphers, result)
+        print("Found xor", xor.hex())
+"""..."""
+```
 
 We stopped the execution of the notebook once we reached the 22 faulty ciphertexts. We ended up getting around 1700 diagonal faulty ciphertexts, but we got the same ones multiple times, with only 22 unique values (we had a lot of duplicates). Once we had the 22 faulty ciphertexts, we could move on to the next step, which was to simply run the `phoenixAES` plugin with the code given below, and it gave us the key directly.
 
