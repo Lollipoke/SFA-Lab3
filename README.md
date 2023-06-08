@@ -6,7 +6,7 @@ date: 01.06.2023
 toc: false
 ...
 
-## Introduction
+# Introduction
 
 In this laboratory, we were able to work on a real target, and perform a Differential Fault Analysis on it. We were given a board with an AES algorithm implemented on it, and we had to find the key of the algorithm by injecting faults in the algorithm, and then analyzing faulty ciphertexts and using ones that followed a diagonal pattern. We were given a notebook to help us perform the attack, and we had to find the key of the algorithm, which was the flag.
 
@@ -16,14 +16,13 @@ For this laboratory, we kept the same board as in the previous lab. In order to 
 
 ![Board setup](img/setup.png)
 
-
 Once everything was connected and ready to go, we started working on the notebook to perform the attack.
 
-## Attack methodology
+# Attack methodology
 
 During the presentation of the lab, we were shown two ways of attacking the AES algorithm. The first consisted of attacking the round 10 of the algorithm, and the second consisted of attacking the round 9. The first one was easier to understand, but required a **lot** of ciphertexts to be able to retrieve the key. The second one was more complicated to understand, but required less ciphertexts, and we could use a public python library, `phoenixAES`, to find the key directly from the diagonal faulty ciphertexts. 
 
-### Characterization
+## Characterization
 
 We kept the same board as in the previous lab, so we already had the good characterization parameters. We tried to run the couting loop again, with those parameters : 
 
@@ -57,7 +56,7 @@ Once we had our parameters fixed, we let the notebook run for a while, and made 
 
 We stopped the execution of the notebook once we reached the 22 faulty ciphertexts. We ended up getting around 1700 diagonal faulty ciphertexts, but we got the same ones multiple times, with only 22 unique values (we had a lot of duplicates). Once we had the 22 faulty ciphertexts, we could move on to the next step, which was to simply run the `phoenixAES` plugin with the code given in Figure 4, and it gave us the key directly.
 
-```python
+```py
 with open('tracefile', 'wb') as t:
     t.write("""
 30313233343536373839616263646566 cd8fe4faee3eb0cebf2d4feb3dfa2ecb
@@ -92,10 +91,10 @@ Note : the value on the left column is the password used, and the value on the r
 
 ## AES Key
 
-The `phoenixAES` plugin gave us the following key for the 10th round : `969559CD3BD154F69F4EB2DC08359A64`, and finally we applied the inverse_key_expansion and turned into ASCII to get the flag :
+The `phoenixAES` plugin gave us the following key for the 10th rounds: `969559CD3BD154F69F4EB2DC08359A64`, and finally we applied the inverse_key_expansion and turned into ASCII to get the flag :
 
 `HEIG{RealAES128}`
 
-## Conclusion
+# Conclusion
 
 To conclude, we can say that that lab helped us understand more about the concept of Differential Fault Analysis and about the diagonal faulty ciphertexts, and it was really fun to observe that by applying a perfectly timed glitch, we could recover so much information.
