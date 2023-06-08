@@ -8,11 +8,11 @@ toc: false
 
 # Introduction
 
-In this laboratory, we were able to work on a real target, and perform a Differential Fault Analysis on it. We were given a board with an AES algorithm implemented on it, and we had to find the key of the algorithm by injecting faults in the algorithm, and then analyzing faulty ciphertexts and using ones that followed a diagonal pattern. We were given a notebook to help us perform the attack, and we had to find the key of the algorithm, which was the flag.
+In this laboratory, we were able to work on a real target, and perform a Differential Fault Analysis (DFA) on it. We were given a board with an AES algorithm implemented on it, and we had to find the key of the algorithm by injecting faults in the algorithm, and then analyzing faulty ciphertexts and using ones that followed a diagonal pattern. We were given a notebook to help us perform the attack, and we had to find the key of the algorithm, which was the flag.
 
 ## Setup
 
-For this laboratory, we kept the same board as in the previous lab. In order to prepare for the AES attack, we only had to install the firmware on the board, and then follow the same procedure as in previous lab. We show the very impressive setup on the Figure 1 below :
+For this laboratory, we kept the same board as in the previous lab. In order to prepare for the AES attack, we only had to install the firmware on the board, and then follow the same procedure as in previous lab. We show our most impressive setup on the Figure 1 below :
 
 ![Board setup](img/setup.png)
 
@@ -54,7 +54,7 @@ We also had to determine when in the AES algorithm to inject the fault, which wa
 
 ![AES graph](img/aes_graph.png)
 
-We eyeballed that the 9th round was occuring between 5500 and 6500, and to be sure we injected the fault at the right time, we decided begin injecting at 5700.
+We eyeballed that the 9th round was occuring between 5500 and 6500, and to be sure we injected the fault at the right time, we decided to begin injecting at 5700.
 
 ## Relevant faulted ciphertexts
 
