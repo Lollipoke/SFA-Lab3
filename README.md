@@ -2,7 +2,7 @@
 title: "AES 128 DFA on real target"
 subtitle: "Laboratory 3"
 author: [Melissa Gehring, Maxim Golay, Francesco Monti]
-date: 01.06.2023
+date: 08.06.2023
 toc: false
 ...
 
@@ -39,7 +39,7 @@ We kept the same board as in the previous lab, so we already had good characteri
 
 Without surprise, we got satisfying results as we can see on the Figure 3 below :
 
-![Characterization](img/characterization.png)
+![Characterization](img/characterization.png){width=80%}
 
 In order to reduce the execution time, we decided to narrow down our parameter set even more (following the results we got in Figure 3), and kept the following parameters : 
 
@@ -61,7 +61,7 @@ We eyeballed that the 9th round was occuring between 5500 and 6500. To be sure w
 Once we had our parameters fixed, we let the notebook run for a while, and made sure to save the faulty ciphertexts that followed a diagonal pattern in a `numpy` array. Following the documentation on the `phoenixAES` plugin, we knew we had to find at least 22 faulty ciphertexts. Here is the snippet of code we used to save the faulty ciphertexts :
 
 ```py
-"""..."""
+[...]
 val = target.simpleserial_read_witherrors('r', 16, glitch_timeout=10, timeout=30)
 if val['valid'] is False:
     print("X", end="")
@@ -77,7 +77,7 @@ if result != CLEAN_CIPHERTEXT:
         found_xor = np.append(found_xor, xor)
         found_fciphers = np.append(found_fciphers, result)
         print("Found xor", xor.hex())
-"""..."""
+[...]
 ```
 
 We stopped the execution of the notebook once we reached the 22 faulty ciphertexts. We ended up getting around 1700 diagonal faulty ciphertexts, but we got the same ones multiple times, with only 22 unique values. Once we had the 22 faulty ciphertexts, we could move on to the next step, which was to simply run the `phoenixAES` plugin with the code given below, and it gave us the key directly.
@@ -117,7 +117,7 @@ Note : the value on the left column is the password used, and the value on the r
 
 ## AES Key
 
-The `phoenixAES` plugin gave us the following key for the 10th round: `969559CD3BD154F69F4EB2DC08359A64`, and finally we applied the inverse_key_expansion and converted it to ASCII to get the flag :
+The `phoenixAES` plugin gave us the following key for the 10th round:\newline `969559CD3BD154F69F4EB2DC08359A64`, and finally we applied the inverse_key_expansion and converted it to ASCII to get the flag :
 
 `HEIG{RealAES128}`
 
